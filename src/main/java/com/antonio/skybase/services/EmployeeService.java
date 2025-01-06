@@ -2,15 +2,21 @@ package com.antonio.skybase.services;
 
 import com.antonio.skybase.dtos.EmployeeDTO;
 import com.antonio.skybase.entities.Employee;
+import com.antonio.skybase.entities.EmployeeAssignment;
 import com.antonio.skybase.entities.Job;
 import com.antonio.skybase.exceptions.BadRequestException;
 import com.antonio.skybase.exceptions.NotFoundException;
+import com.antonio.skybase.repositories.EmployeeAssignmentRepository;
 import com.antonio.skybase.repositories.EmployeeRepository;
 import com.antonio.skybase.repositories.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class EmployeeService {
@@ -19,6 +25,9 @@ public class EmployeeService {
 
     @Autowired
     private JobRepository jobRepository;
+
+    @Autowired
+    private EmployeeAssignmentRepository employeeAssignmentRepository;
 
     public Employee create(EmployeeDTO employeeDTO) {
         Job job = validateJobExists(employeeDTO.getJobId());
@@ -43,6 +52,23 @@ public class EmployeeService {
 
     public Employee getById(Integer id) {
         return employeeRepository.findById(id).orElseThrow(() -> new NotFoundException("Employee with ID " + id + " not found"));
+    }
+
+    public List<Employee> getAvailableEmployeesByDate(LocalDate date) {
+        return employeeRepository.findAvailableEmployeesByDate(date);
+    }
+
+    public List<LocalDate> getEmployeeAvailabilities(Integer id, LocalDate startDate, LocalDate endDate) {
+        List<EmployeeAssignment> employeeAssignments = employeeAssignmentRepository.findByIdEmployeeIdAndIdDateBetween(id, startDate, endDate);
+
+        List<LocalDate> assignedDates = employeeAssignments.stream()
+                .map(assignment -> assignment.getId().getDate())
+                .toList();
+
+        return Stream.iterate(startDate, date -> date.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(startDate, endDate) + 1)
+                .filter(date -> !assignedDates.contains(date))
+                .collect(Collectors.toList());
     }
 
     public Employee update(Integer id, EmployeeDTO employeeDTO) {

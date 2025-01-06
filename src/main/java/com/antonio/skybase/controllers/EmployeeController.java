@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -35,6 +36,16 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(employeeService.getById(id));
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<Employee>> getAvailableEmployees(@RequestParam("date") LocalDate date) {
+        return ResponseEntity.ok(employeeService.getAvailableEmployeesByDate(date));
+    }
+
+    @GetMapping("/{id}/availabilities")
+    public ResponseEntity<List<LocalDate>> getEmployeeAvailabilities(@PathVariable("id") Integer id, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
+        return ResponseEntity.ok(employeeService.getEmployeeAvailabilities(id, startDate, endDate));
     }
 
     @PutMapping("/{id}")

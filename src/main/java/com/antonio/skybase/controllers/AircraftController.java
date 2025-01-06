@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,6 +35,16 @@ public class AircraftController {
     @GetMapping("/{id}")
     public ResponseEntity<Aircraft> getById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(aircraftService.getById(id));
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<Aircraft>> getAvailableAircraft(@RequestParam("date") LocalDate date) {
+        return ResponseEntity.ok(aircraftService.getAvailableAircraftByDate(date));
+    }
+
+    @GetMapping("/{id}/availabilities")
+    public ResponseEntity<List<LocalDate>> getAircraftAvailabilities(@PathVariable("id") Integer id, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
+        return ResponseEntity.ok(aircraftService.getAircraftAvailabilities(id, startDate, endDate));
     }
 
     @PutMapping("/{id}")
