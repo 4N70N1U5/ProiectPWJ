@@ -21,14 +21,17 @@ public class AirportService {
     private CityRepository cityRepository;
 
     public Airport create(AirportDTO airportDTO) {
-        City city = validateCityExists(airportDTO.getCityId());
         if (airportRepository.existsByCode(airportDTO.getCode())) {
             throw new BadRequestException("Airport with code " + airportDTO.getCode() + " already exists");
         }
+
+        City city = validateCityExists(airportDTO.getCityId());
+
         Airport airport = new Airport();
         airport.setName(airportDTO.getName());
         airport.setCode(airportDTO.getCode());
         airport.setCity(city);
+
         return airportRepository.save(airport);
     }
 
@@ -41,11 +44,18 @@ public class AirportService {
     }
 
     public Airport update(Integer id, AirportDTO airportDTO) {
+        if (airportRepository.existsByCode(airportDTO.getCode())) {
+            throw new BadRequestException("Airport with code " + airportDTO.getCode() + " already exists");
+        }
+
         Airport airportToUpdate = airportRepository.findById(id).orElseThrow(() -> new NotFoundException("Airport with ID " + id + " not found"));
+
         City city = validateCityExists(airportDTO.getCityId());
+
         airportToUpdate.setName(airportDTO.getName());
         airportToUpdate.setCode(airportDTO.getCode());
         airportToUpdate.setCity(city);
+
         return airportRepository.save(airportToUpdate);
     }
 

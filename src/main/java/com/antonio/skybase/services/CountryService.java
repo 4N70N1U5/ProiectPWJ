@@ -15,7 +15,9 @@ public class CountryService {
     private CountryRepository countryRepository;
 
     public Country create(Country country) {
-        if ( countryRepository.existsByCode(country.getCode())) throw new BadRequestException("Country with code " + country.getCode() + " already exists");
+        if (countryRepository.existsByCode(country.getCode())) {
+            throw new BadRequestException("Country with code " + country.getCode() + " already exists");
+        }
 
         return countryRepository.save(country);
     }
@@ -29,6 +31,10 @@ public class CountryService {
     }
 
     public Country update(Integer id, Country country) {
+        if (countryRepository.existsByCode(country.getCode())) {
+            throw new BadRequestException("Country with code " + country.getCode() + " already exists");
+        }
+
         Country countryToUpdate = countryRepository.findById(id).orElseThrow(() -> new NotFoundException("Country with ID " + id + " not found"));
 
         countryToUpdate.setName(country.getName());

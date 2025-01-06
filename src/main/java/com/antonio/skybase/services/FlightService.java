@@ -21,6 +21,10 @@ public class FlightService {
     private AirportRepository airportRepository;
 
     public Flight create(FlightDTO flightDTO) {
+        if (flightRepository.existsByNumber(flightDTO.getNumber())) {
+            throw new BadRequestException("Flight with number " + flightDTO.getNumber() + " already exists");
+        }
+
         Airport departureAirport = validateAirportExists(flightDTO.getDepartureAirportId());
         Airport arrivalAirport = validateAirportExists(flightDTO.getArrivalAirportId());
 
@@ -43,7 +47,12 @@ public class FlightService {
     }
 
     public Flight update(Integer id, FlightDTO flightDTO) {
+        if (flightRepository.existsByNumber(flightDTO.getNumber())) {
+            throw new BadRequestException("Flight with number " + flightDTO.getNumber() + " already exists");
+        }
+
         Flight flightToUpdate = flightRepository.findById(id).orElseThrow(() -> new NotFoundException("Flight with ID " + id + " not found"));
+
         Airport departureAirport = validateAirportExists(flightDTO.getDepartureAirportId());
         Airport arrivalAirport = validateAirportExists(flightDTO.getArrivalAirportId());
 
