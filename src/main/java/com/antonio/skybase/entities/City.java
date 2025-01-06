@@ -13,7 +13,7 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column()
+    @Column(nullable = false)
     @NotBlank(message = "City name must not be blank")
     private String name;
 

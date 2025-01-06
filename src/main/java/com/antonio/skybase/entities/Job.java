@@ -14,10 +14,10 @@ public class Job {
     @Column(nullable = false)
     private String title;
 
-    @Column(name = "min_salary", nullable = false)
+    @Column(name = "min_salary")
     private Double minSalary;
 
-    @Column(name = "max_salary", nullable = false)
+    @Column(name = "max_salary")
     private Double maxSalary;
 
     @ManyToOne
