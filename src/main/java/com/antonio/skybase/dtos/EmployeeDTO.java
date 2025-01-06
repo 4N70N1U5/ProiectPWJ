@@ -3,6 +3,7 @@ package com.antonio.skybase.dtos;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
@@ -22,12 +23,14 @@ public class EmployeeDTO {
     @NotBlank(message = "Email must not be blank")
     private String email;
 
-    @NotBlank(message = "Salary must not be blank")
-    private String salary;
+    @NotNull(message = "Salary must not be null")
+    @Positive(message = "Salary must be positive")
+    private Integer salary;
 
     @NotNull(message = "Job ID must not be null")
     private Integer jobId;
 
+    @Positive(message = "Flight hours must be positive")
     private Integer flightHours;
 
     private Integer managerId;

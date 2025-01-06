@@ -1,6 +1,7 @@
 package com.antonio.skybase.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity
@@ -12,5 +13,6 @@ public class Department {
     private Integer id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Department name must not be blank")
     private String name;
 }
