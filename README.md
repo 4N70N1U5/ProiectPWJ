@@ -10,7 +10,7 @@ Proiectul reprezintă o aplicație de management al resurselor pentru companii a
 # Business Requirements
 
 1. Sistemul trebuie sa permita gestionarea aeroporturilor, oraselor si tarilor din care compania aeriana efectueaza zboruri.
-2. Sistemul trebuie sa permita gestionarea departamentelor companiei si a job-urilor din cadrul acestora,
+2. Sistemul trebuie sa permita gestionarea departamentelor companiei si a job-urilor din cadrul acestora.
 3. Sistemul trebuie sa permita gestionarea angajatilor companiei.
 4. Sistemul trebuie sa permita gestionarea aeronavelor pe care le detine compania.
 5. Sistemul trebuie sa permita gestionarea zborurilor efectuate de companie.
