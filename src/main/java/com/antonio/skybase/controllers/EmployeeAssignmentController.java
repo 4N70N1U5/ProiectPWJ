@@ -162,6 +162,36 @@ public class EmployeeAssignmentController {
         return ResponseEntity.ok(employeeAssignmentService.getAssignmentsByFlightAndDateRange(flightId, startDate, endDate));
     }
 
+    @Operation(summary = "Update an employee assignment", description = "Update an employee assignment")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee assignment updated",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeAssignment.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Employee assignment not found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PutMapping("/{employeeId}/{flightId}/{date}")
+    public ResponseEntity<EmployeeAssignment> update(@PathVariable("employeeId") Integer employeeId,
+                                                     @PathVariable("flightId") Integer flightId,
+                                                     @PathVariable("date") LocalDate date,
+                                                     @RequestBody @Valid EmployeeAssignmentDTO employeeAssignmentDTO) {
+        EmployeeAssignmentId id = new EmployeeAssignmentId();
+        id.setEmployeeId(employeeId);
+        id.setFlightId(flightId);
+        id.setDate(date);
+        return ResponseEntity.ok(employeeAssignmentService.update(id, employeeAssignmentDTO));
+    }
+
     @Operation(summary = "Delete an employee assignment", description = "Delete an employee assignment")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Employee assignment deleted"),

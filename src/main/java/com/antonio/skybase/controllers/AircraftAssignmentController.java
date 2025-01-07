@@ -162,6 +162,36 @@ public class AircraftAssignmentController {
         return ResponseEntity.ok(aircraftAssignmentService.getAssignmentsByFlightAndDateRange(flightId, startDate, endDate));
     }
 
+    @Operation(summary = "Update an aircraft assignment", description = "Update an aircraft assignment")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Aircraft assignment updated",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AircraftAssignment.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Aircraft assignment not found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PutMapping("/{aircraftId}/{flightId}/{date}")
+    public ResponseEntity<AircraftAssignment> update(@PathVariable("aircraftId") Integer aircraftId,
+                                                     @PathVariable("flightId") Integer flightId,
+                                                     @PathVariable("date") LocalDate date,
+                                                     @RequestBody @Valid AircraftAssignmentDTO aircraftAssignmentDTO) {
+        AircraftAssignmentId id = new AircraftAssignmentId();
+        id.setAircraftId(aircraftId);
+        id.setFlightId(flightId);
+        id.setDate(date);
+        return ResponseEntity.ok(aircraftAssignmentService.update(id, aircraftAssignmentDTO));
+    }
+
     @Operation(summary = "Delete an aircraft assignment", description = "Delete an aircraft assignment")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Aircraft assignment deleted"),

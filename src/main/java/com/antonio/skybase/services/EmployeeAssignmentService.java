@@ -7,6 +7,7 @@ import com.antonio.skybase.exceptions.NotFoundException;
 import com.antonio.skybase.repositories.EmployeeAssignmentRepository;
 import com.antonio.skybase.repositories.EmployeeRepository;
 import com.antonio.skybase.repositories.FlightRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +66,33 @@ public class EmployeeAssignmentService {
 
     public List<EmployeeAssignment> getAssignmentsByFlightAndDateRange(Integer flightId, LocalDate startDate, LocalDate endDate) {
         return employeeAssignmentRepository.findByIdFlightIdAndIdDateBetween(flightId, startDate, endDate);
+    }
+
+    public EmployeeAssignment update(EmployeeAssignmentId id, @Valid EmployeeAssignmentDTO employeeAssignmentDTO) {
+        EmployeeAssignment employeeAssignment = employeeAssignmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("EmployeeAssignment with ID " + id + " not found"));
+
+        Employee employee = employeeRepository.findById(employeeAssignmentDTO.getEmployeeId())
+                .orElseThrow(() -> new NotFoundException("Employee with ID " + employeeAssignmentDTO.getEmployeeId() + " not found"));
+        Flight flight = flightRepository.findById(employeeAssignmentDTO.getFlightId())
+                .orElseThrow(() -> new NotFoundException("Flight with ID " + employeeAssignmentDTO.getFlightId() + " not found"));
+
+        if (!employeeAssignment.getId().getEmployeeId().equals(employeeAssignmentDTO.getEmployeeId())) {
+            validateEmployeeAvailability(employeeAssignmentDTO.getEmployeeId(), employeeAssignmentDTO.getDate());
+        }
+        validateEmployeeJob(employee.getJob());
+
+        EmployeeAssignmentId newId = new EmployeeAssignmentId();
+        newId.setEmployeeId(employeeAssignmentDTO.getEmployeeId());
+        newId.setFlightId(employeeAssignmentDTO.getFlightId());
+        newId.setDate(employeeAssignmentDTO.getDate());
+
+        employeeAssignment.setId(newId);
+        employeeAssignment.setEmployee(employee);
+        employeeAssignment.setFlight(flight);
+
+        employeeAssignmentRepository.deleteById(id);
+        return employeeAssignmentRepository.save(employeeAssignment);
     }
 
     public void delete(EmployeeAssignmentId id) {

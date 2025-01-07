@@ -10,6 +10,7 @@ import com.antonio.skybase.exceptions.NotFoundException;
 import com.antonio.skybase.repositories.AircraftAssignmentRepository;
 import com.antonio.skybase.repositories.AircraftRepository;
 import com.antonio.skybase.repositories.FlightRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +69,34 @@ public class AircraftAssignmentService {
 
     public List<AircraftAssignment> getAssignmentsByFlightAndDateRange(Integer flightId, LocalDate startDate, LocalDate endDate) {
         return aircraftAssignmentRepository.findByIdFlightIdAndIdDateBetween(flightId, startDate, endDate);
+    }
+
+
+    public AircraftAssignment update(AircraftAssignmentId id, @Valid AircraftAssignmentDTO aircraftAssignmentDTO) {
+        AircraftAssignment aircraftAssignment = aircraftAssignmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("AircraftAssignment with ID " + id + " not found"));
+
+        Aircraft aircraft = aircraftRepository.findById(aircraftAssignmentDTO.getAircraftId())
+                .orElseThrow(() -> new NotFoundException("Aircraft with ID " + aircraftAssignmentDTO.getAircraftId() + " not found"));
+        Flight flight = flightRepository.findById(aircraftAssignmentDTO.getFlightId())
+                .orElseThrow(() -> new NotFoundException("Flight with ID " + aircraftAssignmentDTO.getFlightId() + " not found"));
+
+        if (!aircraftAssignment.getId().getAircraftId().equals(aircraftAssignmentDTO.getAircraftId())) {
+            validateAircraftAvailability(aircraftAssignmentDTO.getAircraftId(), aircraftAssignmentDTO.getDate());
+        }
+        validateAircraftRange(aircraft.getRange(), flight.getDistance());
+
+        AircraftAssignmentId newId = new AircraftAssignmentId();
+        newId.setAircraftId(aircraftAssignmentDTO.getAircraftId());
+        newId.setFlightId(aircraftAssignmentDTO.getFlightId());
+        newId.setDate(aircraftAssignmentDTO.getDate());
+
+        aircraftAssignment.setId(newId);
+        aircraftAssignment.setAircraft(aircraft);
+        aircraftAssignment.setFlight(flight);
+
+        aircraftAssignmentRepository.deleteById(id);
+        return aircraftAssignmentRepository.save(aircraftAssignment);
     }
 
     public void delete(AircraftAssignmentId id) {
