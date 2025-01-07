@@ -47,7 +47,7 @@ public class FlightService {
     }
 
     public Flight update(Integer id, FlightDTO flightDTO) {
-        if (flightRepository.existsByNumber(flightDTO.getNumber())) {
+        if (flightRepository.existsByNumber(flightDTO.getNumber()) && !flightRepository.findByNumber(flightDTO.getNumber()).getId().equals(id)) {
             throw new BadRequestException("Flight with number " + flightDTO.getNumber() + " already exists");
         }
 

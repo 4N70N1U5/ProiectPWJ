@@ -44,7 +44,7 @@ public class AirportService {
     }
 
     public Airport update(Integer id, AirportDTO airportDTO) {
-        if (airportRepository.existsByCode(airportDTO.getCode())) {
+        if (airportRepository.existsByCode(airportDTO.getCode()) && !airportRepository.findByCode(airportDTO.getCode()).getId().equals(id)) {
             throw new BadRequestException("Airport with code " + airportDTO.getCode() + " already exists");
         }
 

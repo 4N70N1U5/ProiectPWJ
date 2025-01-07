@@ -31,7 +31,7 @@ public class CountryService {
     }
 
     public Country update(Integer id, Country country) {
-        if (countryRepository.existsByCode(country.getCode())) {
+        if (countryRepository.existsByCode(country.getCode()) && !countryRepository.findByCode(country.getCode()).getId().equals(id)) {
             throw new BadRequestException("Country with code " + country.getCode() + " already exists");
         }
 

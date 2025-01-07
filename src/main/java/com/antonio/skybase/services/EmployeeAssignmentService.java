@@ -25,12 +25,13 @@ public class EmployeeAssignmentService {
     private FlightRepository flightRepository;
 
     public EmployeeAssignment create(EmployeeAssignmentDTO employeeAssignmentDTO) {
-        validateEmployeeAvailability(employeeAssignmentDTO.getEmployeeId(), employeeAssignmentDTO.getDate());
-
         Employee employee = employeeRepository.findById(employeeAssignmentDTO.getEmployeeId())
                 .orElseThrow(() -> new NotFoundException("Employee with ID " + employeeAssignmentDTO.getEmployeeId() + " not found"));
         Flight flight = flightRepository.findById(employeeAssignmentDTO.getFlightId())
                 .orElseThrow(() -> new NotFoundException("Flight with ID " + employeeAssignmentDTO.getFlightId() + " not found"));
+
+        validateEmployeeAvailability(employeeAssignmentDTO.getEmployeeId(), employeeAssignmentDTO.getDate());
+        validateEmployeeJob(employee.getJob());
 
         EmployeeAssignmentId id = new EmployeeAssignmentId();
         id.setEmployeeId(employeeAssignmentDTO.getEmployeeId());
@@ -74,6 +75,15 @@ public class EmployeeAssignmentService {
         List<EmployeeAssignment> assignments = employeeAssignmentRepository.findByIdEmployeeIdAndIdDateBetween(employeeId, date, date);
         if (!assignments.isEmpty()) {
             throw new BadRequestException("Employee with ID " + employeeId + " is not available on " + date);
+        }
+    }
+
+    private void validateEmployeeJob(Job job) {
+        if (!(
+                job.getDepartment().getId().equals(1) // Echipaj de zbor
+                || job.getDepartment().getId().equals(2) // Personal de cabina
+        )) {
+            throw new BadRequestException("Employee with job " + job.getTitle() + " cannot be assigned to a flight");
         }
     }
 }

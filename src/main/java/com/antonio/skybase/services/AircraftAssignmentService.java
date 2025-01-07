@@ -28,12 +28,13 @@ public class AircraftAssignmentService {
     private FlightRepository flightRepository;
 
     public AircraftAssignment create(AircraftAssignmentDTO aircraftAssignmentDTO) {
-        validateAircraftAvailability(aircraftAssignmentDTO.getAircraftId(), aircraftAssignmentDTO.getDate());
-
         Aircraft aircraft = aircraftRepository.findById(aircraftAssignmentDTO.getAircraftId())
                 .orElseThrow(() -> new NotFoundException("Aircraft with ID " + aircraftAssignmentDTO.getAircraftId() + " not found"));
         Flight flight = flightRepository.findById(aircraftAssignmentDTO.getFlightId())
                 .orElseThrow(() -> new NotFoundException("Flight with ID " + aircraftAssignmentDTO.getFlightId() + " not found"));
+
+        validateAircraftAvailability(aircraftAssignmentDTO.getAircraftId(), aircraftAssignmentDTO.getDate());
+        validateAircraftRange(aircraft.getRange(), flight.getDistance());
 
         AircraftAssignmentId id = new AircraftAssignmentId();
         id.setAircraftId(aircraftAssignmentDTO.getAircraftId());
@@ -77,6 +78,12 @@ public class AircraftAssignmentService {
         List<AircraftAssignment> assignments = aircraftAssignmentRepository.findByIdAircraftIdAndIdDateBetween(aircraftId, date, date);
         if (!assignments.isEmpty()) {
             throw new BadRequestException("Aircraft with ID " + aircraftId + " is not available on " + date);
+        }
+    }
+
+    private void validateAircraftRange(Integer aircraftRange, Integer flightDistance) {
+        if (aircraftRange < flightDistance) {
+            throw new BadRequestException("Aircraft range is not enough for this flight");
         }
     }
 }

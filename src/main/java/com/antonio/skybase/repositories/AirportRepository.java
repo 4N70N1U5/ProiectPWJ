@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AirportRepository extends JpaRepository<Airport, Integer> {
     boolean existsByCode(String code);
+    Airport findByCode(String code);
 }

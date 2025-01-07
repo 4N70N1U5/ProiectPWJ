@@ -3,6 +3,7 @@ package com.antonio.skybase.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -36,4 +37,9 @@ public class Flight {
     @Column(name = "arrival_time", nullable = false)
     @NotNull(message = "Arrival time must not be null")
     private LocalTime arrivalTime;
+
+    @Column(nullable = false)
+    @NotNull(message = "Distance must not be null")
+    @Positive(message = "Distance must be positive")
+    private Integer distance;
 }
