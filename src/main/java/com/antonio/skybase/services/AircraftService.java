@@ -2,6 +2,7 @@ package com.antonio.skybase.services;
 
 import com.antonio.skybase.entities.Aircraft;
 import com.antonio.skybase.entities.AircraftAssignment;
+import com.antonio.skybase.exceptions.BadRequestException;
 import com.antonio.skybase.exceptions.NotFoundException;
 import com.antonio.skybase.repositories.AircraftAssignmentRepository;
 import com.antonio.skybase.repositories.AircraftRepository;
@@ -23,6 +24,10 @@ public class AircraftService {
     private AircraftAssignmentRepository aircraftAssignmentRepository;
 
     public Aircraft create(Aircraft aircraft) {
+        if (aircraftRepository.existsByRegistration(aircraft.getRegistration())) {
+            throw new BadRequestException("Aircraft with registration " + aircraft.getRegistration() + " already exists");
+        }
+
         return aircraftRepository.save(aircraft);
     }
 
@@ -52,7 +57,12 @@ public class AircraftService {
     }
 
     public Aircraft update(Integer id, Aircraft aircraft) {
+        if (aircraftRepository.existsByRegistration(aircraft.getRegistration()) && !aircraftRepository.findByRegistration(aircraft.getRegistration()).getId().equals(id)) {
+            throw new BadRequestException("Aircraft with registration " + aircraft.getRegistration() + " already exists");
+        }
+
         Aircraft aircraftToUpdate = aircraftRepository.findById(id).orElseThrow(() -> new NotFoundException("Aircraft with ID " + id + " not found"));
+        aircraftToUpdate.setRegistration(aircraft.getRegistration());
         aircraftToUpdate.setType(aircraft.getType());
         aircraftToUpdate.setRange(aircraft.getRange());
         aircraftToUpdate.setCapacity(aircraft.getCapacity());

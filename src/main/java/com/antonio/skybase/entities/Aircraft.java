@@ -13,6 +13,10 @@ public class Aircraft {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Aircraft registration must not be blank")
+    private String registration;
+
     @Column(nullable = false)
     @NotBlank(message = "Aircraft type must not be blank")
     private String type;
