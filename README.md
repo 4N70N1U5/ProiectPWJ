@@ -17,8 +17,8 @@ Proiectul reprezintă o aplicație de management al resurselor pentru companii a
 6. Utilizatorul trebuie sa poata vizualiza angajatii disponibili intr-o anumita data / disponibilitatile unui angajat.
 7. Utilizatorul trebuie sa poata vizualiza aeronavele disponibile intr-o anumita data / disponibilitatile unei aeronave.
 8. Sistemul trebuie sa permita alocarea pe un zbor a unei aeronave si a unui echipaj doar daca acestea sunt disponibile in acea data, altfel sa afiseze o eroare.
-9. Sistemul trebuie sa permita vizualizarea alocarilor existente ale angajatilor si aeronavelor.
-10. Sistemul trebuie sa includa un sistem de audit pentru a monitoriza actiunile efectuate de utilizatori.
+9. Sistemul trebuie sa permita alocarea pe un zbor a unei aeronave doar daca are autonomia necesara pentru acel zbor si a unui angajat doar daca face parte din departamentele de echipaj de zbor sau personal de cabina.
+10. Sistemul trebuie sa permita vizualizarea alocarilor existente ale angajatilor si aeronavelor.
 
 # Features pentru stadiul de MVP
 
@@ -26,4 +26,4 @@ Proiectul reprezintă o aplicație de management al resurselor pentru companii a
 2. CRUD pentru departamente si job-uri.
 3. CRUD pentru resurse (angajati si aeronave).
 4. Identificarea si vizualizarea disponibilitatilor angajatilor si aeronavelor.
-5. CRUD pentru alocari si validarea disponibilitatii resurselor inainte de a salva alocarea acestora pe un zbor.
+5. CRUD pentru alocari si validarea disponibilitatii si potrivirii resurselor inainte de a salva alocarea acestora pe un zbor.
